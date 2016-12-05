@@ -1,0 +1,31 @@
+<h1>Synthesise speech</h1>
+<p>Using the following form, paste the text you wish to have synthesised.</p>
+<p>Please, synthesise responsibly. Some services incur a cost and others are rate limited.</p>
+
+<form class="o-forms synthesis-form">
+
+	<div class="inputsContainer">
+		<div>
+			<label for="o-forms__textarea" class="o-forms__label">Text to synthesise</label>
+			<textarea placeholder="Lorem ipsum dolor sit amet..." id="o-forms__textarea" class="o-forms__textarea"></textarea>
+		</div>
+
+		<div>
+			<fieldset class="o-forms">
+				<legend class="o-forms__label">Services to use</legend>
+				<input type="checkbox" name="checkbox" value="1" class="o-forms__checkbox" id="checkbox1" checked></input>
+				<label for="checkbox1" class="o-forms__label">Amazon Polly</label>
+				<input type="checkbox" name="checkbox" value="2" class="o-forms__checkbox" id="checkbox2"></input>
+				<label for="checkbox2" class="o-forms__label">IBM Watson: Bluemix</label>
+				<input type="checkbox" name="checkbox" value="2" class="o-forms__checkbox" id="checkbox3"></input>
+				<label for="checkbox3" class="o-forms__label">Microsoft Cognitive Services</label>
+				<input type="checkbox" name="checkbox" value="2" class="o-forms__checkbox" id="checkbox14"></input>
+				<label for="checkbox14" class="o-forms__label">Web Synthesis API</label>
+			</fieldset>
+		</div>
+	
+	</div>
+
+	<button class="o-buttons o-buttons--standout o-buttons--big">Synthesise</button>
+
+</form>
