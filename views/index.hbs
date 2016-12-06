@@ -29,3 +29,15 @@
 	<button class="o-buttons o-buttons--standout o-buttons--big">Synthesise</button>
 
 </form>
+
+<script>
+
+	function prevent(e){e.preventDefault();e.stopImmediatePropagation();}
+
+	var synthesisForm = document.querySelector('form.synthesis-form');
+
+	synthesisForm.addEventListener('submit', function(e){
+		prevent(e);
+	}, false);
+
+</script>
