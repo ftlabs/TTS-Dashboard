@@ -1,5 +1,8 @@
 module.exports = function(req, res, next){
 
-	res.send('Polly, lol');
-	
+	console.log(req.body);
+	res.json({
+		file : 'http://blah.com'
+	});
+
 }

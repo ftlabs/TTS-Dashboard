@@ -8,7 +8,7 @@ fs.readdirSync(`${__dirname}/../services`).forEach(service => {
   services[service.replace('.js', '')] = require(`../services/${service}`);
 });
 
-router.get(`^/${Object.keys(services).join('|/')}/`, function(req, res, next) {
+router.post(`^/${Object.keys(services).join('|/')}/`, function(req, res, next) {
 
   const requestedService = req.path.split('/').pop();
 

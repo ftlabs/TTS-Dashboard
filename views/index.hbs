@@ -13,14 +13,12 @@
 		<div>
 			<fieldset class="o-forms">
 				<legend class="o-forms__label">Services to use</legend>
-				<input type="checkbox" name="checkbox" value="1" class="o-forms__checkbox" id="checkbox1" checked></input>
+				<input type="checkbox" name="polly" value="1" class="o-forms__checkbox" id="checkbox1"></input>
 				<label for="checkbox1" class="o-forms__label">Amazon Polly</label>
-				<input type="checkbox" name="checkbox" value="2" class="o-forms__checkbox" id="checkbox2"></input>
+				<input type="checkbox" name="bluemix" value="2" class="o-forms__checkbox" id="checkbox2"></input>
 				<label for="checkbox2" class="o-forms__label">IBM Watson: Bluemix</label>
-				<input type="checkbox" name="checkbox" value="2" class="o-forms__checkbox" id="checkbox3"></input>
+				<input type="checkbox" name="microsoft" value="2" class="o-forms__checkbox" id="checkbox3"></input>
 				<label for="checkbox3" class="o-forms__label">Microsoft Cognitive Services</label>
-				<input type="checkbox" name="checkbox" value="2" class="o-forms__checkbox" id="checkbox14"></input>
-				<label for="checkbox14" class="o-forms__label">Web Synthesis API</label>
 			</fieldset>
 		</div>
 	
@@ -30,14 +28,80 @@
 
 </form>
 
+<div class="results" data-visible="false">
+	<h2>Synthesis results</h2>
+
+	<ul class="resultList">
+
+		<!--<li>
+			<h4>Amazon Polly</h4>
+			<audio src="" controls></audio>
+		</li>-->
+
+	</ul>
+
+</div>
+
 <script>
 
 	function prevent(e){e.preventDefault();e.stopImmediatePropagation();}
 
 	var synthesisForm = document.querySelector('form.synthesis-form');
+	var resultsHolder = document.querySelector('.results');
+	var resultsList = resultsHolder.querySelector('.resultList');
 
 	synthesisForm.addEventListener('submit', function(e){
 		prevent(e);
+
+		resultsHolder.dataset.visible = 'true';
+
+		var text = this[0].value;
+		var services = Array.from(this[1].querySelectorAll('input[type="checkbox"]')).map(function(box){
+			return box.checked ? box.name : false;
+		}).filter(function(entry){
+			return entry !== false;
+		});
+
+		console.log(services);
+
+		services.forEach(function(service){
+
+			fetch('/service/' + service, {
+					method : 'POST',
+					headers : {
+						'Content-Type' : 'application/json'
+					},
+					body : JSON.stringify({
+						content : text
+					})
+				})
+				.then(function(result){
+					return result.json();
+				})
+				.then(result => {
+					console.log(result);
+
+					var li = document.createElement('li');
+					var serviceTitle = document.createElement('h4');
+					var audio = document.createElement('audio');
+
+					serviceTitle.textContent = service;
+					audio.src = result.file;
+					audio.controls = 'controls';
+
+					li.appendChild(serviceTitle);
+					li.appendChild(audio);
+
+					resultsList.appendChild(li);
+
+				})
+				.catch(function(err){
+					console.log(err);
+				})
+			;
+
+		})
+
 	}, false);
 
 </script>
