@@ -5,6 +5,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
+const authS3O = require('s3o-middleware');
 
 hbs.registerPartial('header', require('./views/header.hbs'));
 
@@ -21,6 +22,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(authS3O);
 
 app.use('/', require('./routes/index'));
 app.use('/service', require('./routes/services'));
