@@ -33,10 +33,13 @@
 
 	<ul class="resultList">
 
-		<!--<li>
-			<h4>Amazon Polly</h4>
-			<audio src="" controls></audio>
-		</li>-->
+		{{#each availableServices}}
+			<li data-service="{{this.shortname}}" data-loading="true">
+				<h4>{{this.name}}</h4>
+				<audio src="" controls></audio>
+				<div class="o-loading o-loading--dark o-loading--small"></div>
+			</li>
+		{{/each}}
 
 	</ul>
 
@@ -54,7 +57,10 @@
 		prevent(e);
 
 		resultsHolder.dataset.visible = 'true';
-		resultsList.innerHTML = "";
+		
+		Array.from(resultsList.querySelectorAll('li')).forEach(li => {
+			li.dataset.loading = "true";
+		});
 
 		var text = this[0].value;
 		var services = Array.from(this[1].querySelectorAll('input[type="checkbox"]')).map(function(box){
@@ -63,7 +69,14 @@
 			return entry !== false;
 		});
 
-		console.log(services);
+		resultsList.querySelectorAll('li').forEach(li => {
+			var isChecked = services.some(service => {return service === li.dataset.service; });
+			if(!isChecked){
+				li.dataset.visible = "false";
+			} else {
+				li.dataset.visible = "true";
+			}
+		})
 
 		services.forEach(function(service){
 
@@ -88,18 +101,13 @@
 				.then(result => {
 					console.log(result);
 
-					var li = document.createElement('li');
-					var serviceTitle = document.createElement('h4');
-					var audio = document.createElement('audio');
-
-					serviceTitle.textContent = synthesisForm.querySelector('label[for="' + service + '"]').textContent;
+					var li = resultsList.querySelector('li[data-service="' + service + '"]');
+					li.querySelector('h4').textContent = synthesisForm.querySelector('label[for="' + service + '"]').textContent;
+					
+					var audio = li.querySelector('audio');
 					audio.src = window.URL.createObjectURL(result);
-					audio.controls = 'controls';
 
-					li.appendChild(serviceTitle);
-					li.appendChild(audio);
-
-					resultsList.appendChild(li);
+					li.dataset.loading = "false";
 
 				})
 				.catch(function(err){
