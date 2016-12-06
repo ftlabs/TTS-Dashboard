@@ -1,3 +1,4 @@
+const debug = require('debug')('services:bluemix');
 const fs = require('fs');
 const fetch = require('node-fetch');
 
@@ -6,7 +7,7 @@ const SYNTHESIS_URL = `https://${process.env.BLUEMIX_USERNAME}:${process.env.BLU
 function makeRequestToService(req, res, next){
 
 	const textToSynthesise = req.body.content;
-	console.log('TEXT:', textToSynthesise);
+	debug('TEXT:', textToSynthesise);
 
 	fetch(SYNTHESIS_URL, {
 			method : 'POST',

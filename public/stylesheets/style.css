@@ -36,6 +36,7 @@ a {
 
 .synthesis-form .inputsContainer {
   display: flex;
+  margin-bottom: 1em;
 }
 
 .synthesis-form div{

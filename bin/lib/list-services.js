@@ -1,3 +1,4 @@
+const debug = require('debug')('bin:lib:list-services');
 const fs = require('fs');
 const services = {};
 
