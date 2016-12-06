@@ -54,6 +54,7 @@
 		prevent(e);
 
 		resultsHolder.dataset.visible = 'true';
+		resultsList.innerHTML = "";
 
 		var text = this[0].value;
 		var services = Array.from(this[1].querySelectorAll('input[type="checkbox"]')).map(function(box){
@@ -81,7 +82,7 @@
 						throw result;
 					}
 
-					return result.json();
+					return result.blob();
 				})
 				.then(result => {
 					console.log(result);
@@ -91,7 +92,7 @@
 					var audio = document.createElement('audio');
 
 					serviceTitle.textContent = synthesisForm.querySelector('label[for="' + service + '"]').textContent;
-					audio.src = result.file;
+					audio.src = window.URL.createObjectURL(result);
 					audio.controls = 'controls';
 
 					li.appendChild(serviceTitle);
