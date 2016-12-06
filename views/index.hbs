@@ -13,12 +13,12 @@
 		<div>
 			<fieldset class="o-forms">
 				<legend class="o-forms__label">Services to use</legend>
-				<input type="checkbox" name="polly" value="1" class="o-forms__checkbox" id="checkbox1"></input>
-				<label for="checkbox1" class="o-forms__label">Amazon Polly</label>
-				<input type="checkbox" name="bluemix" value="2" class="o-forms__checkbox" id="checkbox2"></input>
-				<label for="checkbox2" class="o-forms__label">IBM Watson: Bluemix</label>
-				<input type="checkbox" name="microsoft" value="2" class="o-forms__checkbox" id="checkbox3"></input>
-				<label for="checkbox3" class="o-forms__label">Microsoft Cognitive Services</label>
+				<input type="checkbox" name="polly" value="1" class="o-forms__checkbox" id="polly"></input>
+				<label for="polly" class="o-forms__label">Amazon Polly</label>
+				<input type="checkbox" name="bluemix" value="2" class="o-forms__checkbox" id="bluemix"></input>
+				<label for="bluemix" class="o-forms__label">IBM Watson: Bluemix</label>
+				<input type="checkbox" name="microsoft" value="2" class="o-forms__checkbox" id="microsoft"></input>
+				<label for="microsoft" class="o-forms__label">Microsoft Cognitive Services</label>
 			</fieldset>
 		</div>
 	
@@ -76,6 +76,11 @@
 					})
 				})
 				.then(function(result){
+
+					if(result.status !== 200){
+						throw result;
+					}
+
 					return result.json();
 				})
 				.then(result => {
@@ -85,7 +90,7 @@
 					var serviceTitle = document.createElement('h4');
 					var audio = document.createElement('audio');
 
-					serviceTitle.textContent = service;
+					serviceTitle.textContent = synthesisForm.querySelector('label[for="' + service + '"]').textContent;
 					audio.src = result.file;
 					audio.controls = 'controls';
 
@@ -96,7 +101,7 @@
 
 				})
 				.catch(function(err){
-					console.log(err);
+					console.log('Error', err);
 				})
 			;
 
