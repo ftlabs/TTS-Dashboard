@@ -53,6 +53,14 @@ a {
   list-style-type: none;
 }
 
+.resultList li[data-loading="true"] audio{
+  display: none;
+}
+
+.resultList li[data-loading="false"] .o-loading{
+  display: none;
+}
+
 @media (max-width: 600px) {
   .synthesis-form .inputsContainer{
     flex-direction: column;
