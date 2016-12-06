@@ -13,12 +13,12 @@
 		<div>
 			<fieldset class="o-forms">
 				<legend class="o-forms__label">Services to use</legend>
-				<input type="checkbox" name="polly" value="1" class="o-forms__checkbox" id="polly"></input>
-				<label for="polly" class="o-forms__label">Amazon Polly</label>
-				<input type="checkbox" name="bluemix" value="2" class="o-forms__checkbox" id="bluemix"></input>
-				<label for="bluemix" class="o-forms__label">IBM Watson: Bluemix</label>
-				<input type="checkbox" name="microsoft" value="2" class="o-forms__checkbox" id="microsoft"></input>
-				<label for="microsoft" class="o-forms__label">Microsoft Cognitive Services</label>
+
+				{{#each availableServices}}
+					<input type="checkbox" name="{{this.shortname}}" value="1" class="o-forms__checkbox" id="{{this.shortname}}"></input>
+					<label for="{{this.shortname}}" class="o-forms__label">{{this.name}}</label>
+				{{/each}}
+
 			</fieldset>
 		</div>
 	
