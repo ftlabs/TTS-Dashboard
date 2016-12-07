@@ -10,13 +10,21 @@
 			<textarea placeholder="Lorem ipsum dolor sit amet..." id="o-forms__textarea" class="o-forms__textarea"></textarea>
 		</div>
 
-		<div>
+		<div class="availableServices">
 			<fieldset class="o-forms">
 				<legend class="o-forms__label">Services to use</legend>
 
 				{{#each availableServices}}
 					<input type="checkbox" name="{{this.shortname}}" value="1" class="o-forms__checkbox" id="{{this.shortname}}"></input>
 					<label for="{{this.shortname}}" class="o-forms__label">{{this.name}}</label>
+					<div class="voice-selector">
+						<small class="o-forms__additional-info">Select a voice for {{this.name}}</small>
+						<select id="o-forms__select-standard" class="o-forms__select" data-service="{{this.shortname}}">
+							{{#each voices}}
+								<option value="{{this}}">{{this}}</option>
+							{{/each}}
+						</select>
+					</div>
 				{{/each}}
 
 			</fieldset>
@@ -86,7 +94,8 @@
 						'Content-Type' : 'application/json'
 					},
 					body : JSON.stringify({
-						content : text
+						content : text,
+						voice : document.querySelector('.voice-selector select[data-service="' + service + '"]').value || ""
 					}),
 					credentials: 'include'
 				})

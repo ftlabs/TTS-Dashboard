@@ -48,6 +48,18 @@ a {
   max-width: 140px;
 }
 
+/*.synthesis-form .inputsContainer .availableServices input[type="checkbox"] + .voice-selector{
+  display: none;
+}*/
+
+.synthesis-form .inputsContainer .availableServices .voice-selector{
+  display: none;
+}
+
+.synthesis-form .inputsContainer .availableServices input[type="checkbox"]:checked + label + .voice-selector{
+  display: inherit;
+}
+
 .resultList{
   padding: 0;
   list-style-type: none;

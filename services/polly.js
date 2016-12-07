@@ -4,13 +4,15 @@ const SERVICE_URL = process.env.AWS_POLLY_SERVICE_URL || 'https://ftlabs-polly-t
 function handleRequestToService(req, res){
 
 	const textToSynthesise = req.body.content;
+	const voiceToUse = req.body.voice || 'Geraint';
+	
 	debug('TEXT:', textToSynthesise);
 
 	return fetch(SERVICE_URL, {
 			method : 'PUT',
 			body : 	JSON.stringify({
 				'Body': textToSynthesise,
-				'VoiceId': 'Geraint',
+				'VoiceId': voiceToUse,
 				'Token': process.env.AWS_POLLY_SERVICE_TOKEN
 			})
 		})
@@ -34,5 +36,6 @@ function handleRequestToService(req, res){
 
 module.exports = {
 	name : 'Amazon Polly',
-	request : handleRequestToService
+	request : handleRequestToService,
+	voices : ['Geraint', 'Gwyneth', 'Mads', 'Naja', 'Hans', 'Marlene', 'Nicole', 'Russell', 'Amy', 'Brian', 'Emma', 'Raveena', 'Ivy', 'Joanna', 'Joey', 'Justin', 'Kendra', 'Kimberly', 'Salli', 'Conchita', 'Enrique', 'Miguel', 'Penelope', 'Chantal', 'Celine', 'Mathieu', 'Dora', 'Karl', 'Carla', 'Giorgio', 'Mizuki', 'Liv', 'Lotte', 'Ruben', 'Ewa', 'Jacek', 'Jan', 'Maja', 'Ricardo', 'Vitoria', 'Cristiano', 'Ines', 'Carmen', 'Maxim', 'Tatyana', 'Astrid', 'Filiz']
 };
