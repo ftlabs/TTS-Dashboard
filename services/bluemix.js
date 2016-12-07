@@ -9,7 +9,7 @@ function makeRequestToService(req, res, next){
 	const textToSynthesise = req.body.content;
 	debug('TEXT:', textToSynthesise);
 
-	fetch(SYNTHESIS_URL, {
+	return fetch(SYNTHESIS_URL, {
 			method : 'POST',
 			headers : { 
 				'Content-Type' : 'application/json',
