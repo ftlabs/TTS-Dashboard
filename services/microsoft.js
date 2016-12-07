@@ -30,7 +30,7 @@ function handleRequestToService(req, res){
 	const textToSynthesise = req.body.content;
 	debug('TEXT:', textToSynthesise);
 
-	getJWTToken()
+	return getJWTToken()
 		.then(JWTToken => {
 			debug('JWTToken:', JWTToken);
 
