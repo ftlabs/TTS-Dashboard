@@ -5,6 +5,8 @@ const fetch = require('node-fetch');
 const AUTH_URL = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken';
 const SERVICE_URL = 'https://speech.platform.bing.com/synthesize';
 
+const characterLimit = 1000;
+
 const voiceMappings = {
 	'Zira (en-US)' :  { 
 		'name' : 'Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)',

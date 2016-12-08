@@ -1,6 +1,9 @@
 const debug = require('debug')('services:polly');
 const SERVICE_URL = process.env.AWS_POLLY_SERVICE_URL || 'https://ftlabs-polly-tts-service.herokuapp.com/convert';
 
+const characterLimit = 1500;
+const splittingRegex = require('../bin/lib/character-splitting-regex')(characterLimit);
+
 const voiceMapping = {
 	'Geraint (Welsh English)' : 'Geraint',
 	'Gwyneth (Welsh)' : 'Gwyneth',
@@ -30,27 +33,44 @@ function handleRequestToService(req, res){
 	
 	debug('TEXT:', textToSynthesise);
 
-	return fetch(SERVICE_URL, {
-			method : 'PUT',
-			body : 	JSON.stringify({
-				'Body': textToSynthesise,
-				'VoiceId': voiceMapping[voiceToUse],
-				'Token': process.env.AWS_POLLY_SERVICE_TOKEN
+	const numberOfPasses = Math.ceil( textToSynthesise.length / characterLimit );
+	const chunks = textToSynthesise.match(splittingRegex);
+
+	const audioBuffers = chunks.map( textChunk => {
+		
+		return fetch(SERVICE_URL, {
+				method : 'PUT',
+				body : 	JSON.stringify({
+					'Body': textChunk,
+					'VoiceId': voiceMapping[voiceToUse],
+					'Token': process.env.AWS_POLLY_SERVICE_TOKEN
+				})
 			})
-		})
-		.then(res => {
-			if(res.status !== 200){
-				throw res;
-			} else {
-				return res;
-			}
-		})
-		.then(res => res.buffer())
-		.then(audio => {
-			debug(audio);
-			res.set('Content-Type', 'audio/mp3');
-			res.set('Content-Length', audio.length);
-			res.send(audio);
+			.then(res => {
+				if(res.status !== 200){
+					throw res;
+				} else {
+					return res;
+				}
+			})
+			.then(res => res.buffer())
+		;
+
+	});
+
+	Promise.all(audioBuffers)
+		.then(buffers => {
+
+			const totalSize = buffers.reduce( (a, b) => {
+				return a.length + b.length;
+			}, 0);
+
+			const newBuff = Buffer.alloc(totalSize);
+
+			buffers.forEach( (buffer, idx) => {
+
+			});
+
 		})
 	;
 
