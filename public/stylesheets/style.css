@@ -36,16 +36,38 @@ a {
 
 .synthesis-form .inputsContainer {
   display: flex;
-  margin-bottom: 1em;
+  flex-direction: column;
 }
 
 .synthesis-form div{
   flex-grow: 1;
   min-width: 25%;
+  margin-bottom: 1em;
+}
+
+.synthesis-form fieldset.o-forms{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
 }
 
 .synthesis-form button{
   max-width: 140px;
+}
+
+/*.synthesis-form .inputsContainer .availableServices input[type="checkbox"] + .voice-selector{
+  display: none;
+}*/
+
+.synthesis-form .inputsContainer .availableServices .voice-selector{
+  display: none;
+  flex-direction: column;
+  margin-bottom: 1em;
+}
+
+.synthesis-form .inputsContainer .availableServices input[type="checkbox"]:checked + label + .voice-selector{
+  display: flex;
 }
 
 .resultList{

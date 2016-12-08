@@ -10,7 +10,8 @@ router.get('/', function(req, res, next) {
     availableServices : Object.keys(services).map(s => {
       return{
         shortname : s,
-        name : services[s].name
+        name : services[s].name,
+        voices : services[s].voices
       };
     })
   });
