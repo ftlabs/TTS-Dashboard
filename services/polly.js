@@ -1,6 +1,28 @@
 const debug = require('debug')('services:polly');
 const SERVICE_URL = process.env.AWS_POLLY_SERVICE_URL || 'https://ftlabs-polly-tts-service.herokuapp.com/convert';
 
+const voiceMapping = {
+	'Geraint (Welsh English)' : 'Geraint',
+	'Gwyneth (Welsh)' : 'Gwyneth',
+	'Hans (German)' : 'Hans',
+	'Marlene (German)' : 'Marlene',
+	'Nicole (Australian)' : 'Nicole',
+	'Russell (Australian)' : 'Russell',
+	'Amy (British)' : 'Amy',
+	'Brian (British)' : 'Brian',
+	'Emma (British)' : 'Emma',
+	'Raveena (Indian English)' : 'Raveena',
+	'Ivy (US)' : 'Ivy',
+	'Joanna (US)' : 'Joanna',
+	'Joey (US)' : 'Joey',
+	'Justin (US)' : 'Justin',
+	'Kendra (US)' : 'Kendra',
+	'Kimberly (US)' : 'Kimberly',
+	'Salli (US)' : 'Salli',
+	'Celine (French)' : 'Celine',
+	'Mathieu (French)' : 'Mathieu'
+};
+
 function handleRequestToService(req, res){
 
 	const textToSynthesise = req.body.content;
@@ -12,7 +34,7 @@ function handleRequestToService(req, res){
 			method : 'PUT',
 			body : 	JSON.stringify({
 				'Body': textToSynthesise,
-				'VoiceId': voiceToUse,
+				'VoiceId': voiceMapping[voiceToUse],
 				'Token': process.env.AWS_POLLY_SERVICE_TOKEN
 			})
 		})
@@ -37,5 +59,25 @@ function handleRequestToService(req, res){
 module.exports = {
 	name : 'Amazon Polly',
 	request : handleRequestToService,
-	voices : ['Geraint', 'Gwyneth', 'Mads', 'Naja', 'Hans', 'Marlene', 'Nicole', 'Russell', 'Amy', 'Brian', 'Emma', 'Raveena', 'Ivy', 'Joanna', 'Joey', 'Justin', 'Kendra', 'Kimberly', 'Salli', 'Conchita', 'Enrique', 'Miguel', 'Penelope', 'Chantal', 'Celine', 'Mathieu', 'Dora', 'Karl', 'Carla', 'Giorgio', 'Mizuki', 'Liv', 'Lotte', 'Ruben', 'Ewa', 'Jacek', 'Jan', 'Maja', 'Ricardo', 'Vitoria', 'Cristiano', 'Ines', 'Carmen', 'Maxim', 'Tatyana', 'Astrid', 'Filiz']
+	voices : [
+		'Geraint (Welsh English)',
+		'Gwyneth (Welsh)',
+		'Hans (German)',
+		'Marlene (German)',
+		'Nicole (Australian)',
+		'Russell (Australian)',
+		'Amy (British)',
+		'Brian (British)',
+		'Emma (British)',
+		'Raveena (Indian English)',
+		'Ivy (US)',
+		'Joanna (US)',
+		'Joey (US)',
+		'Justin (US)',
+		'Kendra (US)',
+		'Kimberly (US)',
+		'Salli (US)',
+		'Celine (French)',
+		'Mathieu (French)'
+	]
 };
