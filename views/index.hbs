@@ -6,6 +6,9 @@
 
 	<div class="inputsContainer">
 		<div>
+			<label for="o-forms-standard" class="o-forms__label">FT.com Article UUID</label>
+			<input type="text" id="o-forms-standard" placeholder="9d376431-4530-48ab-8a0d-bf500f0a0223" class="o-forms__text"></input>
+			<h4>OR</h4>
 			<label for="o-forms__textarea" class="o-forms__label">Text to synthesise</label>
 			<textarea placeholder="Lorem ipsum dolor sit amet..." id="o-forms__textarea" class="o-forms__textarea"></textarea>
 		</div>
@@ -70,8 +73,9 @@
 			li.dataset.loading = "true";
 		});
 
-		var text = this[0].value;
-		var services = Array.from(this[1].querySelectorAll('input[type="checkbox"]')).map(function(box){
+		var uuid = this[0].value;
+		var text = this[1].value;
+		var services = Array.from(this[2].querySelectorAll('input[type="checkbox"]')).map(function(box){
 			return box.checked ? box.name : false;
 		}).filter(function(entry){
 			return entry !== false;
@@ -95,7 +99,8 @@
 					},
 					body : JSON.stringify({
 						content : text,
-						voice : document.querySelector('.voice-selector select[data-service="' + service + '"]').value || ""
+						voice : document.querySelector('.voice-selector select[data-service="' + service + '"]').value || "",
+						uuid : uuid
 					}),
 					credentials: 'include'
 				})
