@@ -42,6 +42,9 @@
 <div class="results" data-visible="false">
 	<h2>Synthesis results</h2>
 
+    <button class="o-buttons o-buttons--standout o-buttons--big playAll">Play All</button>
+    <button class="o-buttons o-buttons--standout o-buttons--big pauseAll">Pause All</button>
+    <button class="o-buttons o-buttons--standout o-buttons--big stopAll">Stop All</button>
 	<ul class="resultList">
 
 		{{#each availableServices}}
@@ -63,6 +66,33 @@
 	var synthesisForm = document.querySelector('form.synthesis-form');
 	var resultsHolder = document.querySelector('.results');
 	var resultsList = resultsHolder.querySelector('.resultList');
+	var playAllBtn = resultsHolder.querySelector('.playAll');
+	var pauseAllBtn = resultsHolder.querySelector('.pauseAll');
+	var stopAllBtn = resultsHolder.querySelector('.stopAll');
+
+	playAllBtn.addEventListener('click', function(e){
+	    Array.from(resultsHolder.querySelectorAll('audio')).forEach(element => {
+	        element.play();
+	    });
+
+	}, false)
+
+	pauseAllBtn.addEventListener('click', function(e){
+	    Array.from(resultsHolder.querySelectorAll('audio')).forEach(element => {
+	        element.pause();
+
+	    });
+
+	}, false)
+
+	stopAllBtn.addEventListener('click', function(e){
+	    Array.from(resultsHolder.querySelectorAll('audio')).forEach(element => {
+	        element.currentTime = 0;
+	        element.pause();
+	    });
+
+	}, false)
+
 
 	synthesisForm.addEventListener('submit', function(e){
 		prevent(e);
@@ -81,7 +111,7 @@
 			return entry !== false;
 		});
 
-		resultsList.querySelectorAll('li').forEach(li => {
+		Array.from(resultsList.querySelectorAll('li')).forEach(li => {
 			var isChecked = services.some(service => {return service === li.dataset.service; });
 			if(!isChecked){
 				li.dataset.visible = "false";
