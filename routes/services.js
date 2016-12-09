@@ -3,6 +3,9 @@ const express = require('express');
 const router = express.Router();
 
 const services = require('../bin/lib/list-services');
+const uuidOrText = require('../bin/lib/uuid-or-text');
+
+router.use(uuidOrText);
 
 router.post(`^/${Object.keys(services).join('|/')}/`, function(req, res, next) {
 
