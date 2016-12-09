@@ -1,6 +1,7 @@
 const debug = require('debug')('services:polly');
 const SERVICE_URL = process.env.AWS_POLLY_SERVICE_URL || 'https://ftlabs-polly-tts-service.herokuapp.com/convert';
 
+const characterLimit = 1500;
 const voiceMapping = {
 	'Geraint (Welsh English)' : 'Geraint',
 	'Gwyneth (Welsh)' : 'Gwyneth',
@@ -25,7 +26,7 @@ const voiceMapping = {
 
 function handleRequestToService(req, res){
 
-	const textToSynthesise = req.body.content;
+	const textToSynthesise = req.body.content.substr(0, characterLimit);
 	const voiceToUse = req.body.voice || 'Geraint';
 	
 	debug('TEXT:', textToSynthesise);
@@ -59,6 +60,7 @@ function handleRequestToService(req, res){
 module.exports = {
 	name : 'Amazon Polly',
 	request : handleRequestToService,
+	limit : characterLimit,
 	voices : [
 		'Geraint (Welsh English)',
 		'Gwyneth (Welsh)',

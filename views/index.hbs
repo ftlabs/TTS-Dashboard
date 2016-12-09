@@ -16,7 +16,7 @@
 
 				{{#each availableServices}}
 					<input type="checkbox" name="{{this.shortname}}" value="1" class="o-forms__checkbox" id="{{this.shortname}}"></input>
-					<label for="{{this.shortname}}" class="o-forms__label">{{this.name}}</label>
+					<label for="{{this.shortname}}" class="o-forms__label">{{this.name}} ({{this.limit}} character limit)</label>
 					<div class="voice-selector">
 						<small class="o-forms__additional-info">Select a voice for {{this.name}}</small>
 						<select id="o-forms__select-standard" class="o-forms__select" data-service="{{this.shortname}}">
