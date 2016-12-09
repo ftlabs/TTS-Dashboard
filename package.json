@@ -10,6 +10,7 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
     "dotenv": "^2.0.0",
+    "escape-quotes": "^1.0.2",
     "express": "~4.13.4",
     "hbs": "~4.0.0",
     "morgan": "~1.7.0",

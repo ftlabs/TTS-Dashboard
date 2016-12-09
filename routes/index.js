@@ -11,7 +11,8 @@ router.get('/', function(req, res, next) {
       return{
         shortname : s,
         name : services[s].name,
-        voices : services[s].voices
+        voices : services[s].voices,
+        limit : services[s].limit
       };
     })
   });
