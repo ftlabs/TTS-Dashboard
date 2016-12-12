@@ -63,7 +63,7 @@ a {
 .synthesis-form .inputsContainer .availableServices .voice-selector{
   display: none;
   flex-direction: column;
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
 }
 
 .synthesis-form .inputsContainer .availableServices input[type="checkbox"]:checked + label + .voice-selector{

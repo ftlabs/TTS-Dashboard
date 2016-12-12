@@ -2,6 +2,7 @@ const debug = require('debug')('services:microsoft');
 const fs = require('fs');
 const fetch = require('node-fetch');
 const escape = require('escape-quotes');
+const unidecode = require('unidecode');
 
 const AUTH_URL = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken';
 const SERVICE_URL = 'https://speech.platform.bing.com/synthesize';
@@ -173,7 +174,7 @@ function getJWTToken(){
 function generateSSML(text, voice){
 	
 	// return `<speak version='1.0' xml:lang='en-US'><voice xml:lang='en-US' xml:gender='Female' name='Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)'>${text}</voice></speak>`;
-	const ssml = `<speak version='1.0' xml:lang='${voiceMappings[voice].language}'><voice xml:lang='${voiceMappings[voice].language}' xml:gender='${voiceMappings[voice].gender}' name='${voiceMappings[voice].name}'>${escape( text.replace(/\r?\n|\r/g, ' ') ) }</voice></speak>`;
+	const ssml = `<speak version='1.0' xml:lang='${voiceMappings[voice].language}'><voice xml:lang='${voiceMappings[voice].language}' xml:gender='${voiceMappings[voice].gender}' name='${voiceMappings[voice].name}'>${unidecode( text ) }</voice></speak>`;
 	debug(ssml);
 	return ssml;
 
