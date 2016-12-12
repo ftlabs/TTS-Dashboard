@@ -6,6 +6,7 @@ module.exports = function(req, res, next){
 	debug(req.body);
 
 	if(req.body.uuid !== undefined && req.body.uuid !== ''){
+		
 		stripCAPIService(req.body.uuid)
 			.then(content => {
 				req.body.content = content;
@@ -16,6 +17,10 @@ module.exports = function(req, res, next){
 				debug(err);
 			})
 		;
+		
+	} else if(req.body.content === undefined || req.body.content === ''){
+		res.status(422);
+		res.end();
 	} else {
 		next();
 	}

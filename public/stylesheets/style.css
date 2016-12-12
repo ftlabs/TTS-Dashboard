@@ -11,6 +11,10 @@ html, body{
     background-color: #FFF1E0;
 }
 
+body{
+  height: 100%;
+}
+
 .wrapper{
   width: 1180px;
   height: auto;
@@ -36,7 +40,6 @@ a {
 
 .synthesis-form .inputsContainer {
   display: flex;
-  flex-direction: column;
 }
 
 .synthesis-form div{

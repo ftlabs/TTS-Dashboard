@@ -135,7 +135,8 @@
 		services.forEach(function(service){
 
 			var li = resultsList.querySelector('li[data-service="' + service + '"]');
-
+			li.dataset.error = "false";
+			
 			fetch('/service/' + service, {
 					method : 'POST',
 					headers : {
@@ -162,7 +163,6 @@
 					var audio = li.querySelector('audio');
 					audio.src = window.URL.createObjectURL(result);
 
-					li.dataset.error = "false";
 					li.dataset.loading = "false";
 
 				})
