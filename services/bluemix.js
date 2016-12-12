@@ -38,6 +38,11 @@ function makeRequestToService(req, res, next){
 			res.send(audio);
 
 		})
+		.catch(err => {
+			debug(err);
+			res.status(err.status || 500);
+			res.end();
+		})
 	;
 
 }

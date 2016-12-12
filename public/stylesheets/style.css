@@ -63,7 +63,7 @@ a {
 .synthesis-form .inputsContainer .availableServices .voice-selector{
   display: none;
   flex-direction: column;
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
 }
 
 .synthesis-form .inputsContainer .availableServices input[type="checkbox"]:checked + label + .voice-selector{
@@ -75,6 +75,7 @@ a {
   list-style-type: none;
 }
 
+
 .resultList li[data-loading="true"] audio{
   display: none;
 }
@@ -82,6 +83,20 @@ a {
 .resultList li[data-loading="false"] .o-loading{
   display: none;
 }
+
+.resultList li p{
+  color: #cc0000;
+  display: none;
+}
+
+.resultList li[data-error="true"] p {
+  display: inherit;
+}
+
+.resultList li[data-error="true"] audio {
+  display: none;
+}
+
 
 @media (max-width: 600px) {
   .synthesis-form .inputsContainer{

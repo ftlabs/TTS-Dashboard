@@ -5,7 +5,7 @@ module.exports = function(req, res, next){
 
 	debug(req.body);
 
-	if(req.body.uuid !== undefined){
+	if(req.body.uuid !== undefined && req.body.uuid !== ''){
 		stripCAPIService(req.body.uuid)
 			.then(content => {
 				req.body.content = content;
