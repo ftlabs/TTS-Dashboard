@@ -3,8 +3,10 @@ const express = require('express');
 const router = express.Router();
 
 const services = require('../bin/lib/list-services');
+const checkCache = require('../bin/lib/check-cache');
 const uuidOrText = require('../bin/lib/uuid-or-text');
 
+router.use(checkCache);
 router.use(uuidOrText);
 
 router.post(`^/${Object.keys(services).join('|/')}/`, function(req, res, next) {

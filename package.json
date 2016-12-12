@@ -13,6 +13,7 @@
     "escape-quotes": "^1.0.2",
     "express": "~4.13.4",
     "hbs": "~4.0.0",
+    "md5": "^2.2.1",
     "morgan": "~1.7.0",
     "node-fetch": "^1.6.3",
     "s3o-middleware": "^1.8.0",
