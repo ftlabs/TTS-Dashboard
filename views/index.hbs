@@ -64,6 +64,31 @@
 
 	function prevent(e){e.preventDefault();e.stopImmediatePropagation();}
 
+	function handleMediaTriggers(trigger){
+
+		var audioElements = Array.from(resultsHolder.querySelectorAll('audio'));
+		switch(trigger){
+			case 'play':
+				audioElements.forEach(element => {
+					element.play();
+				});
+				break;
+			case 'pause':
+				audioElements.forEach(element => {
+					element.pause();
+				});
+				break;
+			case 'stop':
+				audioElements.forEach(element => {
+					element.currentTime = 0;
+					element.pause();
+				});
+				break;
+		
+		}
+
+	}
+
 	var synthesisForm = document.querySelector('form.synthesis-form');
 	var resultsHolder = document.querySelector('.results');
 	var resultsList = resultsHolder.querySelector('.resultList');
@@ -71,29 +96,11 @@
 	var pauseAllBtn = resultsHolder.querySelector('.pauseAll');
 	var stopAllBtn = resultsHolder.querySelector('.stopAll');
 
-	playAllBtn.addEventListener('click', function(e){
-	    Array.from(resultsHolder.querySelectorAll('audio')).forEach(element => {
-	        element.play();
-	    });
+	playAllBtn.addEventListener('click', function(){ handleMediaTriggers('play') }, false);
 
-	}, false)
+	pauseAllBtn.addEventListener('click', function(){ handleMediaTriggers('pause') }, false);
 
-	pauseAllBtn.addEventListener('click', function(e){
-	    Array.from(resultsHolder.querySelectorAll('audio')).forEach(element => {
-	        element.pause();
-
-	    });
-
-	}, false)
-
-	stopAllBtn.addEventListener('click', function(e){
-	    Array.from(resultsHolder.querySelectorAll('audio')).forEach(element => {
-	        element.currentTime = 0;
-	        element.pause();
-	    });
-
-	}, false)
-
+	stopAllBtn.addEventListener('click', function(){ handleMediaTriggers('stop') }, false);
 
 	synthesisForm.addEventListener('submit', function(e){
 		prevent(e);
@@ -119,6 +126,10 @@
 			} else {
 				li.dataset.visible = "true";
 			}
+		});
+
+		Array.from(document.querySelectorAll('audio')).forEach(audioElement => {
+			audioElement.src = "";
 		})
 
 		services.forEach(function(service){
