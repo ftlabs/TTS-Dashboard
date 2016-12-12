@@ -219,6 +219,8 @@ function handleRequestToService(req, res){
 				})
 				.catch(err => {
 					debug(err);
+					res.status(err.status || 500);
+					res.send();
 				})
 			;
 

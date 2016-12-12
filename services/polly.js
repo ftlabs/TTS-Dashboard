@@ -53,6 +53,11 @@ function handleRequestToService(req, res){
 			res.set('Content-Length', audio.length);
 			res.send(audio);
 		})
+		.catch(err => {
+			debug(err);
+			res.status(err.status || 500);
+			res.end();
+		})
 	;
 
 }

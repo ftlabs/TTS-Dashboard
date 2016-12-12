@@ -49,6 +49,7 @@
 				<h4>{{this.name}}</h4>
 				<audio src="" controls></audio>
 				<div class="o-loading o-loading--dark o-loading--small"></div>
+				<p class='errorText'>Sorry, an error occurred when we tried to synthesise speech with this service.</p>
 			</li>
 		{{/each}}
 
@@ -92,6 +93,8 @@
 
 		services.forEach(function(service){
 
+			var li = resultsList.querySelector('li[data-service="' + service + '"]');
+
 			fetch('/service/' + service, {
 					method : 'POST',
 					headers : {
@@ -114,18 +117,21 @@
 				})
 				.then(result => {
 					console.log(result);
-
-					var li = resultsList.querySelector('li[data-service="' + service + '"]');
-					li.querySelector('h4').textContent = synthesisForm.querySelector('label[for="' + service + '"]').textContent;
 					
 					var audio = li.querySelector('audio');
 					audio.src = window.URL.createObjectURL(result);
 
+					li.dataset.error = "false";
 					li.dataset.loading = "false";
 
 				})
 				.catch(function(err){
 					console.log('Error', err);
+					console.log(service);
+
+					li.dataset.error = "true";
+					li.dataset.loading = "false";
+
 				})
 			;
 
