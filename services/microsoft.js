@@ -173,7 +173,6 @@ function getJWTToken(){
 
 function generateSSML(text, voice){
 	
-	// return `<speak version='1.0' xml:lang='en-US'><voice xml:lang='en-US' xml:gender='Female' name='Microsoft Server Speech Text to Speech Voice (en-US, ZiraRUS)'>${text}</voice></speak>`;
 	const ssml = `<speak version='1.0' xml:lang='${voiceMappings[voice].language}'><voice xml:lang='${voiceMappings[voice].language}' xml:gender='${voiceMappings[voice].gender}' name='${voiceMappings[voice].name}'>${unidecode( text ) }</voice></speak>`;
 	debug(ssml);
 	return ssml;

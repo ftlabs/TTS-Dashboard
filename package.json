@@ -17,7 +17,6 @@
     "node-fetch": "^1.6.3",
     "s3o-middleware": "^1.8.0",
     "serve-favicon": "~2.3.0",
-    "translitterify": "^1.0.0",
     "unidecode": "^0.1.8"
   }
 }
