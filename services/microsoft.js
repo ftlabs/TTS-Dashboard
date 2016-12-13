@@ -263,5 +263,6 @@ module.exports = {
 		'Danny (zh-HK)',
 		'Yating (zh-TW)',
 		'Zhiwei (zh-TW)'
-	]
+	],
+	audioFormat : 'wav'
 };

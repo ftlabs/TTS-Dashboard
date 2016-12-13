@@ -51,6 +51,7 @@ module.exports = {
 	name : 'IBM Watson: Bluemix',
 	request : makeRequestToService,
 	limit : characterLimit,
-	voices : [ 'en-US_MichaelVoice', 'de-DE_BirgitVoice', 'de-DE_DieterVoice', 'en-GB_KateVoice', 'en-US_AllisonVoice', 'en-US_LisaVoice', 'es-ES_EnriqueVoice', 'es-ES_LauraVoice', 'es-LA_SofiaVoice', 'es-US_SofiaVoice', 'fr-FR_ReneeVoice', 'it-IT_FrancescaVoice', 'ja-JP_EmiVoice', 'pt-BR_IsabelaVoice']
+	voices : [ 'en-US_MichaelVoice', 'de-DE_BirgitVoice', 'de-DE_DieterVoice', 'en-GB_KateVoice', 'en-US_AllisonVoice', 'en-US_LisaVoice', 'es-ES_EnriqueVoice', 'es-ES_LauraVoice', 'es-LA_SofiaVoice', 'es-US_SofiaVoice', 'fr-FR_ReneeVoice', 'it-IT_FrancescaVoice', 'ja-JP_EmiVoice', 'pt-BR_IsabelaVoice'],
+	audioFormat : 'wav'
 };
 

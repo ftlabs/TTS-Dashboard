@@ -86,5 +86,6 @@ module.exports = {
 		'Salli (US)',
 		'Celine (French)',
 		'Mathieu (French)'
-	]
+	],
+	audioFormat : 'mp3'
 };
