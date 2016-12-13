@@ -56,6 +56,13 @@
 			</li>
 		{{/each}}
 
+		<li class="spokenlayer" data-loading="true" data-visible="false">
+			<h4>Spoken Layer (human read)</h4>
+			<audio src="" controls></audio>
+			<div class="o-loading o-loading--dark o-loading--small"></div>
+			<p class='errorText'>Sorry, an error occurred when we tried to synthesise speech with this service.</p>
+		</li>
+
 	</ul>
 
 </div>
@@ -92,6 +99,8 @@
 	var synthesisForm = document.querySelector('form.synthesis-form');
 	var resultsHolder = document.querySelector('.results');
 	var resultsList = resultsHolder.querySelector('.resultList');
+	var spokenLayerResult = resultsHolder.querySelector('.spokenlayer');
+
 	var playAllBtn = resultsHolder.querySelector('.playAll');
 	var pauseAllBtn = resultsHolder.querySelector('.pauseAll');
 	var stopAllBtn = resultsHolder.querySelector('.stopAll');
@@ -132,6 +141,34 @@
 			audioElement.src = "";
 		})
 
+		// Check if there is a human version, if there is a UUID
+
+		if(uuid !== '' && uuid !== undefined){
+			fetch('https://ftlabs-audio-available.herokuapp.com/check/' + uuid)
+				.then(res => {
+					if(res.status === 200){
+						return res;
+					} else {
+						throw res;
+					}
+				})
+				.then(res => res.json())
+				.then(data => {
+					if(data.haveFile === true){
+						var audioElement = spokenLayerResult.querySelector('audio');
+						audioElement.src = data.url;
+						spokenLayerResult.dataset.visible = "true";
+						spokenLayerResult.dataset.loading = "false";
+					}
+				})
+				.catch(err => {
+					console.log(err);
+				})
+			;
+		}
+
+
+		// Get all of the results from the selected services
 		services.forEach(function(service){
 
 			var li = resultsList.querySelector('li[data-service="' + service + '"]');
