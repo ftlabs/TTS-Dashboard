@@ -11,14 +11,14 @@ function checkObjectIsInS3(filename, bucket = process.env.AWS_CACHE_BUCKET){
 		S3.headObject({
 			Bucket : bucket,
 			Key : filename
-		}, (err) => {
+		}, (err, data) => {
 
 			if(err && err.code === 'NotFound'){
 				resolve(false);
 			} else if(err){
 				reject(err);
 			} else {
-				resolve(true);
+				resolve(data);
 			}
 
 		});
@@ -47,7 +47,6 @@ function getObjectFromS3(filename, bucket = process.env.AWS_CACHE_BUCKET){
 
 	} );
 
-
 }
 
 function putObjectInS3Bucket(filename, data, bucket = process.env.AWS_CACHE_BUCKET){
@@ -69,6 +68,7 @@ function putObjectInS3Bucket(filename, data, bucket = process.env.AWS_CACHE_BUCK
 		});
 
 	} );
+
 }
 
 module.exports = {
