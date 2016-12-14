@@ -4,6 +4,8 @@ const fetch = require('node-fetch');
 const escape = require('escape-quotes');
 const unidecode = require('unidecode');
 
+const cacheBucket = require('../bin/lib/bucket-interface');
+
 const AUTH_URL = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken';
 const SERVICE_URL = 'https://speech.platform.bing.com/synthesize';
 
@@ -213,9 +215,20 @@ function handleRequestToService(req, res){
 				})
 				.then(res => res.buffer())
 				.then(audio => {
+			
 					res.set('Content-Type', 'audio/wav');
 					res.set('Content-Length', audio.length);
 					res.send(audio);
+
+					cacheBucket.put(res.locals.cacheFilename, audio)
+						.then(function(){
+							debug(`${res.locals.cacheFilename} successfully stored.`);
+						})
+						.catch(err => {
+							debug(`Failed to store ${res.locals.cacheFilename}`, err);
+						})
+					;
+
 				})
 				.catch(err => {
 					debug(err);
@@ -263,5 +276,6 @@ module.exports = {
 		'Danny (zh-HK)',
 		'Yating (zh-TW)',
 		'Zhiwei (zh-TW)'
-	]
+	],
+	audioFormat : 'wav'
 };

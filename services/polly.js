@@ -1,6 +1,8 @@
 const debug = require('debug')('services:polly');
 const SERVICE_URL = process.env.AWS_POLLY_SERVICE_URL || 'https://ftlabs-polly-tts-service.herokuapp.com/convert';
 
+const cacheBucket = require('../bin/lib/bucket-interface');
+
 const characterLimit = 1500;
 const voiceMapping = {
 	'Geraint (Welsh English)' : 'Geraint',
@@ -48,10 +50,20 @@ function handleRequestToService(req, res){
 		})
 		.then(res => res.buffer())
 		.then(audio => {
+			
 			debug(audio);
 			res.set('Content-Type', 'audio/mp3');
 			res.set('Content-Length', audio.length);
 			res.send(audio);
+			
+			cacheBucket.put(res.locals.cacheFilename, audio)
+				.then(function(){
+					debug(`${res.locals.cacheFilename} successfully stored.`);
+				})
+				.catch(err => {
+					debug(`Failed to store ${res.locals.cacheFilename}`, err);
+				})
+			;
 		})
 		.catch(err => {
 			debug(err);
@@ -86,5 +98,6 @@ module.exports = {
 		'Salli (US)',
 		'Celine (French)',
 		'Mathieu (French)'
-	]
+	],
+	audioFormat : 'mp3'
 };
