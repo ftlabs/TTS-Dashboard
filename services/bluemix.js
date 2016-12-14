@@ -5,7 +5,6 @@ const fetch = require('node-fetch');
 const cacheBucket = require('../bin/lib/bucket-interface');
 
 const SYNTHESIS_URL = `https://${process.env.BLUEMIX_USERNAME}:${process.env.BLUEMIX_PASSWORD}@stream.watsonplatform.net/text-to-speech/api/v1/synthesize`;
-debug(SYNTHESIS_URL);
 
 const characterLimit = 1200;
 
