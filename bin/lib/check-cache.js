@@ -1,31 +1,33 @@
 const debug = require('debug')('bin:lib:check-cache');
-const md5 = require('md5');
+// const md5 = require('md5');
 
 const checkForBucketObject = require('./bucket-interface').check;
 const getBucketObject = require('./bucket-interface').get;
 const services = require('./list-services');
+const generateHashFilename = require('./hash-values');
 
 module.exports = function(req, res, next){
 
 	const requestedService = req.path.replace( /\//g, '');
-	const selectedVoice = req.body.voice || '';
-	let hashedValue = (req.body.uuid === '' || req.body.uuid === undefined) ? md5(req.body.content + selectedVoice) : md5(req.body.uuid + selectedVoice);
+	const content = (req.body.uuid === '' || req.body.uuid === undefined) ? req.body.content : req.body.uuid;
 
-	const fileName = `${hashedValue}-${requestedService}.${services[requestedService].audioFormat}`;
+	const fileName = generateHashFilename(requestedService, content, req.body.voice);
 
-	debug(hashedValue, fileName);
+	res.locals.cacheFilename = fileName;
+
+	debug('Hashed filename:', fileName);
 	debug(req.path, requestedService, req.body.content);
 	
 	checkForBucketObject(fileName)
 		.then(thereIsACachedVersion => {
 			debug(`Is there a cached version of ${fileName}`, thereIsACachedVersion);
 			if(thereIsACachedVersion){
-				next();
 				getBucketObject(fileName)
-					.then(audio => {
+					.then(data => {
+						debug(`Delivering TTS from cache`, data);
 						res.set('Content-Type', `audio/${services[requestedService].audioFormat}`);
-						res.set('Content-Length', audio.length);
-						res.send(audio);
+						res.set('Content-Length', data.ContentLength);
+						res.send(data.Body);
 					})
 					.catch(err => {
 						debug(err);

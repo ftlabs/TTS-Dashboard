@@ -2,6 +2,8 @@ const debug = require('debug')('services:bluemix');
 const fs = require('fs');
 const fetch = require('node-fetch');
 
+const cacheBucket = require('../bin/lib/bucket-interface');
+
 const SYNTHESIS_URL = `https://${process.env.BLUEMIX_USERNAME}:${process.env.BLUEMIX_PASSWORD}@stream.watsonplatform.net/text-to-speech/api/v1/synthesize`;
 debug(SYNTHESIS_URL);
 
@@ -33,9 +35,19 @@ function makeRequestToService(req, res, next){
 		.then(res => res.buffer())
 		.then(audio => {
 
+			debug(audio);
 			res.set('Content-Type', 'audio/wav');
 			res.set('Content-Length', audio.length);
 			res.send(audio);
+
+			cacheBucket.put(res.locals.cacheFilename, audio)
+				.then(function(){
+					debug(`${res.locals.cacheFilename} successfully stored.`);
+				})
+				.catch(err => {
+					debug(`Failed to store ${res.locals.cacheFilename}`, err);
+				})
+			;
 
 		})
 		.catch(err => {
