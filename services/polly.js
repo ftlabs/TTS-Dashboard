@@ -1,7 +1,14 @@
 const debug = require('debug')('services:polly');
+const fs = require('fs');
+const shortId = require('shortid').generate;
+
 const SERVICE_URL = process.env.AWS_POLLY_SERVICE_URL || 'https://ftlabs-polly-tts-service.herokuapp.com/convert';
+const tmpFolder = process.env.TMP_DIR || '/tmp';
 
 const cacheBucket = require('../bin/lib/bucket-interface');
+const splitText = require('../bin/lib/split-text-into-limits');
+const runFFMPEG = require('../bin/lib/run-ffmpeg'); 
+const cleanup = require('../bin/lib/clean-up');
 
 const characterLimit = 1500;
 const voiceMapping = {
@@ -28,27 +35,103 @@ const voiceMapping = {
 
 function handleRequestToService(req, res){
 
-	const textToSynthesise = req.body.content.substr(0, characterLimit);
+	const textToSynthesise = splitText(req.body.content, characterLimit);
 	const voiceToUse = req.body.voice || 'Geraint';
-	
-	debug('TEXT:', textToSynthesise);
 
-	return fetch(SERVICE_URL, {
-			method : 'PUT',
-			body : 	JSON.stringify({
-				'Body': textToSynthesise,
-				'VoiceId': voiceMapping[voiceToUse],
-				'Token': process.env.AWS_POLLY_SERVICE_TOKEN
+	const requests = textToSynthesise.map( t => {
+
+		return fetch(SERVICE_URL, {
+				method : 'PUT',
+				body : 	JSON.stringify({
+					'Body': t,
+					'VoiceId': voiceMapping[voiceToUse],
+					'Token': process.env.AWS_POLLY_SERVICE_TOKEN
+				})
 			})
+			.then(res => {
+				if(res.status !== 200){
+					throw res;
+				} else {
+					return res;
+				}
+			})
+			.then(res => res.buffer())
+			.then(data => {
+				
+				return new Promise( (resolve, reject) => {
+
+					const destination = `${tmpFolder}/${shortId()}.mp3`
+
+					fs.writeFile(destination, data, err => {
+						if(err){
+							reject(err);
+						} else {
+							resolve(destination);
+						}
+					})
+
+				});
+
+			})
+		;
+
+	} );
+
+	const concatenatedDestination = `${tmpFolder}/${res.locals.cacheFilename}`;
+	
+	return Promise.all(requests)
+		.then( files => {
+
+			const fileList = files.map(f => {return `file '${f}'`}).join('\n');
+			const fileListDestination = `${tmpFolder}/${res.locals.cacheFilename}.txt`;
+
+			return new Promise( (resolve, reject) => {
+				fs.writeFile(fileListDestination, fileList, err => {
+					if(err){
+						reject(err);
+					} else {
+						resolve(fileListDestination);
+					}
+				})
+			})
+			.then(function(){
+
+				const args = [
+					'-y',
+					'-f',
+					`concat`,
+					'-safe',
+					'0',
+					'-i',
+					fileListDestination,
+					'-c',
+					'copy',
+					`${concatenatedDestination}`
+				];
+
+				return runFFMPEG(args)
+					.then(function(){
+
+						files.forEach(f => cleanup(f));
+						cleanup(fileListDestination);
+
+						return new Promise( (resolve, reject) => {
+
+							fs.readFile(concatenatedDestination, (err, data) => {
+								if(err){
+									reject(err);
+								} else {
+									resolve(data);
+								}
+							});
+
+						} );
+					})
+				;
+
+			});
+
 		})
-		.then(res => {
-			if(res.status !== 200){
-				throw res;
-			} else {
-				return res;
-			}
-		})
-		.then(res => res.buffer())
 		.then(audio => {
 			
 			debug(audio);
@@ -59,9 +142,11 @@ function handleRequestToService(req, res){
 			cacheBucket.put(res.locals.cacheFilename, audio)
 				.then(function(){
 					debug(`${res.locals.cacheFilename} successfully stored.`);
+					cleanup(concatenatedDestination);
 				})
 				.catch(err => {
 					debug(`Failed to store ${res.locals.cacheFilename}`, err);
+					cleanup(concatenatedDestination);					
 				})
 			;
 		})
@@ -70,7 +155,7 @@ function handleRequestToService(req, res){
 			res.status(err.status || 500);
 			res.end();
 		})
-	;
+	;	
 
 }
 
