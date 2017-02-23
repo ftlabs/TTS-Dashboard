@@ -1,5 +1,6 @@
 const debug = require('debug')('bin:lib:run-ffmpeg');
 const ffmpeg = require('ffmpeg-static');
+const spawn = require('child_process').spawn;
 
 module.exports = function(args){
 
