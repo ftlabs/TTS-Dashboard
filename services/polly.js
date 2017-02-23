@@ -1,7 +1,13 @@
 const debug = require('debug')('services:polly');
+const fs = require('fs');
+const shortId = require('shortid').generate;
+
 const SERVICE_URL = process.env.AWS_POLLY_SERVICE_URL || 'https://ftlabs-polly-tts-service.herokuapp.com/convert';
+const tmpFolder = process.env.TMP_DIR || '/tmp';
 
 const cacheBucket = require('../bin/lib/bucket-interface');
+const splitText = require('../bin/lib/split-text-into-limits');
+const runFFMPEG = require('../bin/lib/run-ffmpeg'); 
 
 const characterLimit = 1500;
 const voiceMapping = {
@@ -28,27 +34,78 @@ const voiceMapping = {
 
 function handleRequestToService(req, res){
 
-	const textToSynthesise = req.body.content.substr(0, characterLimit);
+	const textToSynthesise = splitText(req.body.content);
 	const voiceToUse = req.body.voice || 'Geraint';
 	
 	debug('TEXT:', textToSynthesise);
 
-	return fetch(SERVICE_URL, {
-			method : 'PUT',
-			body : 	JSON.stringify({
-				'Body': textToSynthesise,
-				'VoiceId': voiceMapping[voiceToUse],
-				'Token': process.env.AWS_POLLY_SERVICE_TOKEN
+	const requests = textToSynthesise.map( t => {
+		return fetch(SERVICE_URL, {
+				method : 'PUT',
+				body : 	JSON.stringify({
+					'Body': textToSynthesise,
+					'VoiceId': voiceMapping[voiceToUse],
+					'Token': process.env.AWS_POLLY_SERVICE_TOKEN
+				})
 			})
+			.then(res => {
+				if(res.status !== 200){
+					throw res;
+				} else {
+					return res;
+				}
+			})
+			.then(res => res.buffer())
+			.then(data => {
+				
+				return new Promise( (resolve, reject) => {
+
+					const destination = `${tmpFolder}/${shortId()}`
+
+					fs.writeFile(shortId(), data, err => {
+						if(err){
+							reject(err);
+						} else {
+							resolve(destination);
+						}
+					})
+
+				});
+
+			})
+		;
+
+	} );
+
+	return Promise.all(requests)
+		.then( files => {
+
+			const concatenatedDestination = `${tmpFolder}/${res.locals.cacheFilename}`;
+
+			const args = [
+				'-i',
+				`concat:${files.join('|')}`,
+				'-acodec',
+				concatenatedDestination
+			];
+
+			return runFFMPEG(args)
+				.then(function(){
+					return new Promise( (resolve, reject) => {
+
+						fs.readFile(concatenatedDestination, (err, data) => {
+							if(err){
+								reject(err);
+							} else {
+								resolve(data);
+							}
+						});
+
+					} );
+				})
+			;
+
 		})
-		.then(res => {
-			if(res.status !== 200){
-				throw res;
-			} else {
-				return res;
-			}
-		})
-		.then(res => res.buffer())
 		.then(audio => {
 			
 			debug(audio);
@@ -71,6 +128,24 @@ function handleRequestToService(req, res){
 			res.end();
 		})
 	;
+
+	return fetch(SERVICE_URL, {
+			method : 'PUT',
+			body : 	JSON.stringify({
+				'Body': textToSynthesise,
+				'VoiceId': voiceMapping[voiceToUse],
+				'Token': process.env.AWS_POLLY_SERVICE_TOKEN
+			})
+		})
+		.then(res => {
+			if(res.status !== 200){
+				throw res;
+			} else {
+				return res;
+			}
+		})
+		.then(res => res.buffer())
+		
 
 }
 
