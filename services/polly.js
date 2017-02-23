@@ -34,7 +34,7 @@ const voiceMapping = {
 
 function handleRequestToService(req, res){
 
-	const textToSynthesise = splitText(req.body.content);
+	const textToSynthesise = splitText(req.body.content, characterLimit);
 	const voiceToUse = req.body.voice || 'Geraint';
 	
 	debug('TEXT:', textToSynthesise);
@@ -127,25 +127,7 @@ function handleRequestToService(req, res){
 			res.status(err.status || 500);
 			res.end();
 		})
-	;
-
-	return fetch(SERVICE_URL, {
-			method : 'PUT',
-			body : 	JSON.stringify({
-				'Body': textToSynthesise,
-				'VoiceId': voiceMapping[voiceToUse],
-				'Token': process.env.AWS_POLLY_SERVICE_TOKEN
-			})
-		})
-		.then(res => {
-			if(res.status !== 200){
-				throw res;
-			} else {
-				return res;
-			}
-		})
-		.then(res => res.buffer())
-		
+	;	
 
 }
 
