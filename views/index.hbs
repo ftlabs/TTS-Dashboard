@@ -174,7 +174,7 @@
 			var li = resultsList.querySelector('li[data-service="' + service + '"]');
 			li.dataset.error = "false";
 			
-			fetch('/service/' + service, {
+			fetch('/service/' + service + '?token={{token}}', {
 					method : 'POST',
 					headers : {
 						'Content-Type' : 'application/json'
