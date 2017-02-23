@@ -36,14 +36,13 @@ function handleRequestToService(req, res){
 
 	const textToSynthesise = splitText(req.body.content, characterLimit);
 	const voiceToUse = req.body.voice || 'Geraint';
-	
-	debug('TEXT:', textToSynthesise);
 
 	const requests = textToSynthesise.map( t => {
+
 		return fetch(SERVICE_URL, {
 				method : 'PUT',
 				body : 	JSON.stringify({
-					'Body': textToSynthesise,
+					'Body': t,
 					'VoiceId': voiceMapping[voiceToUse],
 					'Token': process.env.AWS_POLLY_SERVICE_TOKEN
 				})
@@ -60,9 +59,9 @@ function handleRequestToService(req, res){
 				
 				return new Promise( (resolve, reject) => {
 
-					const destination = `${tmpFolder}/${shortId()}`
+					const destination = `${tmpFolder}/${shortId()}.mp3`
 
-					fs.writeFile(shortId(), data, err => {
+					fs.writeFile(destination, data, err => {
 						if(err){
 							reject(err);
 						} else {
@@ -80,30 +79,50 @@ function handleRequestToService(req, res){
 	return Promise.all(requests)
 		.then( files => {
 
+			const fileList = files.map(f => {return `file '${f}'`}).join('\n');
+			const fileListDestination = `${tmpFolder}/${res.locals.cacheFilename}.txt`;
 			const concatenatedDestination = `${tmpFolder}/${res.locals.cacheFilename}`;
 
-			const args = [
-				'-i',
-				`concat:${files.join('|')}`,
-				'-acodec',
-				concatenatedDestination
-			];
-
-			return runFFMPEG(args)
-				.then(function(){
-					return new Promise( (resolve, reject) => {
-
-						fs.readFile(concatenatedDestination, (err, data) => {
-							if(err){
-								reject(err);
-							} else {
-								resolve(data);
-							}
-						});
-
-					} );
+			return new Promise( (resolve, reject) => {
+				fs.writeFile(fileListDestination, fileList, err => {
+					if(err){
+						reject(err);
+					} else {
+						resolve(fileListDestination);
+					}
 				})
-			;
+			})
+			.then(function(){
+
+				const args = [
+					'-f',
+					`concat`,
+					'-safe',
+					'0',
+					'-i',
+					fileListDestination,
+					'-c',
+					'copy',
+					`${concatenatedDestination}`
+				];
+
+				return runFFMPEG(args)
+					.then(function(){
+						return new Promise( (resolve, reject) => {
+
+							fs.readFile(concatenatedDestination, (err, data) => {
+								if(err){
+									reject(err);
+								} else {
+									resolve(data);
+								}
+							});
+
+						} );
+					})
+				;
+
+			});
 
 		})
 		.then(audio => {

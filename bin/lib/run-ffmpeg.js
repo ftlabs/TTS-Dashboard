@@ -4,7 +4,7 @@ const spawn = require('child_process').spawn;
 
 module.exports = function(args){
 
-	debug('\n\n', args.join(' '), '\n\n');
+	debug('\n\n', ffmpeg.path, args.join(' '), '\n\n');
 
 	return new Promise( ( resolve, reject) => {
 
@@ -16,15 +16,15 @@ module.exports = function(args){
 		});
 
 		process.stderr.on('data', (data) => {
-			// debug(`stderr: ${data}`);
-			output += data + '\n';			
+			debug(`stderr: ${data}`);
+			output += data + '\n';
 		});
 
 		process.on('close', (code) => {
 
 			if(code === 1){
 				debug(`FFMPEG exited with status code 1`);
-				reject();
+				reject('');
 			} else if(code === 0){
 				debug('FFMPEG closed and was happy');
 				resolve(output);

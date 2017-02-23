@@ -1,4 +1,4 @@
-module.exports = function(phrase = "", chunkSize = 90){
+module.exports = function(phrase, chunkSize = 90){
 
 	const words = phrase.split(' ');
 
@@ -16,6 +16,10 @@ module.exports = function(phrase = "", chunkSize = 90){
 		}
 
 	});
+
+	if(chunks.length === 0){
+		chunks.push(currentChunk);
+	}
 
 	return chunks;
 
