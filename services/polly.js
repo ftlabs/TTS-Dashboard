@@ -8,6 +8,7 @@ const tmpFolder = process.env.TMP_DIR || '/tmp';
 const cacheBucket = require('../bin/lib/bucket-interface');
 const splitText = require('../bin/lib/split-text-into-limits');
 const runFFMPEG = require('../bin/lib/run-ffmpeg'); 
+const cleanup = require('../bin/lib/clean-up');
 
 const characterLimit = 1500;
 const voiceMapping = {
@@ -76,12 +77,13 @@ function handleRequestToService(req, res){
 
 	} );
 
+	const concatenatedDestination = `${tmpFolder}/${res.locals.cacheFilename}`;
+	
 	return Promise.all(requests)
 		.then( files => {
 
 			const fileList = files.map(f => {return `file '${f}'`}).join('\n');
 			const fileListDestination = `${tmpFolder}/${res.locals.cacheFilename}.txt`;
-			const concatenatedDestination = `${tmpFolder}/${res.locals.cacheFilename}`;
 
 			return new Promise( (resolve, reject) => {
 				fs.writeFile(fileListDestination, fileList, err => {
@@ -95,6 +97,7 @@ function handleRequestToService(req, res){
 			.then(function(){
 
 				const args = [
+					'-y',
 					'-f',
 					`concat`,
 					'-safe',
@@ -108,6 +111,10 @@ function handleRequestToService(req, res){
 
 				return runFFMPEG(args)
 					.then(function(){
+
+						files.forEach(f => cleanup(f));
+						cleanup(fileListDestination);
+
 						return new Promise( (resolve, reject) => {
 
 							fs.readFile(concatenatedDestination, (err, data) => {
@@ -135,9 +142,11 @@ function handleRequestToService(req, res){
 			cacheBucket.put(res.locals.cacheFilename, audio)
 				.then(function(){
 					debug(`${res.locals.cacheFilename} successfully stored.`);
+					cleanup(concatenatedDestination);
 				})
 				.catch(err => {
 					debug(`Failed to store ${res.locals.cacheFilename}`, err);
+					cleanup(concatenatedDestination);					
 				})
 			;
 		})
