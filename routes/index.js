@@ -20,5 +20,6 @@ router.get('/', authS3O,function(req, res, next) {
     token : process.env.SERVICE_TOKEN  
   });
 });
+router.post('/', authS3O);
 
 module.exports = router;
