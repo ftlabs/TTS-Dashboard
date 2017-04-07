@@ -17,10 +17,7 @@ module.exports = function(phrase, chunkSize = 90){
 
 	});
 
-	if(chunks.length === 0){
-		chunks.push(currentChunk);
-	}
-
+	chunks.push(currentChunk);
 	return chunks;
 
 }
