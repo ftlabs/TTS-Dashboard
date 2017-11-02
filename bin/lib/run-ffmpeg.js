@@ -7,8 +7,6 @@ module.exports = function(args){
 	debug('\n\n', ffmpeg.path, args.join(' '), '\n\n');
 
 	return new Promise( ( resolve, reject) => {
-
-		let output = '';
 		const process = spawn(ffmpeg.path, args);
 
 		process.stdout.on('data', (data) => {
@@ -17,7 +15,6 @@ module.exports = function(args){
 
 		process.stderr.on('data', (data) => {
 			debug(`stderr: ${data}`);
-			output += data + '\n';
 		});
 
 		process.on('close', (code) => {
@@ -27,7 +24,7 @@ module.exports = function(args){
 				reject('');
 			} else if(code === 0){
 				debug('FFMPEG closed and was happy');
-				resolve(output);
+				resolve();
 			}
 
 		});
