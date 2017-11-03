@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authS3O = require('s3o-middleware');
+const authS3O = require('@financial-times/s3o-middleware');
 
 const services = require('../bin/lib/list-services');
 
