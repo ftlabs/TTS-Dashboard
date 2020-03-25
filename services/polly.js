@@ -1,5 +1,6 @@
 const debug = require('debug')('services:polly');
 const fs = require('fs');
+const fetch = require("node-fetch");
 const shortId = require('shortid').generate;
 
 const SERVICE_URL = process.env.AWS_POLLY_SERVICE_URL || 'https://ftlabs-polly-tts-service.herokuapp.com/convert';
@@ -35,16 +36,10 @@ const voiceMapping = {
 
 function handleRequestToService(req, res){
 
-	console.log('handleRequestToService');
-
 	const textToSynthesise = splitText(req.body.content, characterLimit);
 	const voiceToUse = req.body.voice || 'Geraint';
 
-	console.log('aaaaa');
-
 	const requests = textToSynthesise.map( t => {
-
-		console.log('bbbbb');
 
 		return fetch(SERVICE_URL, {
 				method : 'PUT',
@@ -55,7 +50,6 @@ function handleRequestToService(req, res){
 				})
 			})
 			.then(res => {
-				console.log('bbbbbb2');
 				if(res.status !== 200){
 					throw res;
 				} else {
@@ -64,7 +58,6 @@ function handleRequestToService(req, res){
 			})
 			.then(res => res.buffer())
 			.then(data => {
-				console.log('bbbbbb3');
 				return new Promise( (resolve, reject) => {
 
 					const destination = `${tmpFolder}/${shortId()}.mp3`
@@ -84,27 +77,13 @@ function handleRequestToService(req, res){
 
 	} );
 
-	console.log(requests);
-
-	console.log('ccccc');
-
 	const concatenatedDestination = `${tmpFolder}/${res.locals.cacheFilename}`;
-
-	console.log('ddddddd');
 	
 	return Promise.all(requests)
 		.then( files => {
 
-			console.log('eeeeeee');
-
 			const fileList = files.map(f => {return `file '${f}'`}).join('\n');
 			const fileListDestination = `${tmpFolder}/${res.locals.cacheFilename}.txt`;
-
-			console.log('------');
-			console.log(fileList);
-			console.log('------');
-			console.log(fileListDestination);
-			console.log('------');
 
 			return new Promise( (resolve, reject) => {
 				fs.writeFile(fileListDestination, fileList, err => {
@@ -129,8 +108,6 @@ function handleRequestToService(req, res){
 					'copy',
 					`${concatenatedDestination}`
 				];
-
-				console.log(args);
 
 				return runFFMPEG(args)
 					.then(function(){

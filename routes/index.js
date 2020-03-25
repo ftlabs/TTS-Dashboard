@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-//const authS3O = require('@financial-times/s3o-middleware');
 
 const services = require('../bin/lib/list-services');
 
@@ -20,6 +19,6 @@ router.get('/', function(req, res, next) {
     token : process.env.SERVICE_TOKEN  
   });
 });
-router.post('/', function(req, res, next) { next(); });
+router.post('/');
 
 module.exports = router;
