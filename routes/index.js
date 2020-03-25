@@ -1,32 +1,11 @@
 const express = require('express');
 const router = express.Router();
 //const authS3O = require('@financial-times/s3o-middleware');
-const session = require('cookie-session');
-const OktaMiddleware = require('@financial-times/okta-express-middleware');
-
-const okta = new OktaMiddleware({
-  client_id: process.env.OKTA_CLIENT,
-  client_secret: process.env.OKTA_SECRET,
-  issuer: process.env.OKTA_ISSUER,
-  appBaseUrl: process.env.BASE_URL,
-  scope: 'openid offline_access name'
-});
-
-router.use(session({
-	secret: process.env.SESSION_TOKEN,
-	maxAge: 24 * 3600 * 1000, //24h
-	httpOnly: true
-}));
 
 const services = require('../bin/lib/list-services');
 
 /* GET home page. */
-router.get('/',function(req, res, next) {
-
-  router.use(okta.router);
-  router.use(okta.ensureAuthenticated());
-  router.use(okta.verifyJwts());
-
+router.get('/', function(req, res, next) {
   res.render('index', { 
     title: process.env.SERVICE_NAME || 'FT Labs TTS Dashboard',
     serviceName: process.env.SERVICE_NAME || 'FT Labs TTS Dashboard',
@@ -41,6 +20,6 @@ router.get('/',function(req, res, next) {
     token : process.env.SERVICE_TOKEN  
   });
 });
-router.post('/', authS3O);
+router.post('/', function(req, res, next) { next(); });
 
 module.exports = router;
