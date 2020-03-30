@@ -28,7 +28,8 @@
     "unidecode": "^0.1.8"
   },
   "engines": {
-    "node": "8.9.x"
+    "node": "10.19.0",
+    "npm": ">=6.0.0"
   },
   "snyk": true
 }
