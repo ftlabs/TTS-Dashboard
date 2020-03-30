@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@financial-times/okta-express-middleware": "0.0.4",
-    "@financial-times/s3o-middleware": "^2.0.5",
     "aws-sdk": "^2.577.0",
     "body-parser": "^1.18.3",
     "cookie-parser": "~1.4.3",
@@ -29,7 +28,7 @@
     "unidecode": "^0.1.8"
   },
   "engines": {
-    "node": "> 6.11.0 < 7.0.0"
+    "node": "8.9.x"
   },
   "snyk": true
 }
