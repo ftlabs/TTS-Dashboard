@@ -8,10 +8,12 @@
     "prepare": "npm run snyk-protect"
   },
   "dependencies": {
+    "@financial-times/okta-express-middleware": "0.0.4",
     "@financial-times/s3o-middleware": "^2.0.5",
     "aws-sdk": "^2.577.0",
     "body-parser": "^1.18.3",
     "cookie-parser": "~1.4.3",
+    "cookie-session": "^1.4.0",
     "debug": "^4.1.0",
     "dotenv": "^2.0.0",
     "escape-quotes": "^1.0.2",

@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const authS3O = require('@financial-times/s3o-middleware');
 
 const services = require('../bin/lib/list-services');
 
 /* GET home page. */
-router.get('/', authS3O,function(req, res, next) {
+router.get('/', function(req, res, next) {
   res.render('index', { 
     title: process.env.SERVICE_NAME || 'FT Labs TTS Dashboard',
     serviceName: process.env.SERVICE_NAME || 'FT Labs TTS Dashboard',
@@ -20,6 +19,6 @@ router.get('/', authS3O,function(req, res, next) {
     token : process.env.SERVICE_TOKEN  
   });
 });
-router.post('/', authS3O);
+router.post('/');
 
 module.exports = router;

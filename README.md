@@ -4,6 +4,14 @@
 
 The FT Labs TTS Dash was not designed to be used as an API, however it can function as such. This document outlines the requests that can be made to the FT Labs Dash in order to synthesise speech from text with Amazon’s Polly service.
 
+## Setup locally
+
+- `npm install`
+- `touch .env`
+- Populate .env with Get .env details from LastPass
+	- Ensure **PORT** is set to `4040`
+- `npm start`
+
 ## Making a request
 
 The request must have the following headers set:

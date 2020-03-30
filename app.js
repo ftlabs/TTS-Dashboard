@@ -5,6 +5,8 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const hbs = require('hbs');
+const session = require('cookie-session');
+const OktaMiddleware = require('@financial-times/okta-express-middleware');
 
 const checkToken = require('./bin/lib/check-token');
 
@@ -24,8 +26,29 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', require('./routes/index'));
 app.use('/service', checkToken, require('./routes/services'));
+
+// Paths that do use OKTA
+const okta = new OktaMiddleware({
+  client_id: process.env.OKTA_CLIENT,
+  client_secret: process.env.OKTA_SECRET,
+  issuer: process.env.OKTA_ISSUER,
+  appBaseUrl: process.env.BASE_URL,
+  scope: 'openid offline_access name'
+});
+
+app.use(session({
+	secret: process.env.SESSION_TOKEN,
+	maxAge: 24 * 3600 * 1000, //24h
+	httpOnly: true
+}));
+
+
+app.use(okta.router);
+app.use(okta.ensureAuthenticated());
+
+app.use('/', okta.verifyJwts(),require('./routes/index'));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

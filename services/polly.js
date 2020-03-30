@@ -1,5 +1,6 @@
 const debug = require('debug')('services:polly');
 const fs = require('fs');
+const fetch = require("node-fetch");
 const shortId = require('shortid').generate;
 
 const SERVICE_URL = process.env.AWS_POLLY_SERVICE_URL || 'https://ftlabs-polly-tts-service.herokuapp.com/convert';
@@ -57,7 +58,6 @@ function handleRequestToService(req, res){
 			})
 			.then(res => res.buffer())
 			.then(data => {
-				
 				return new Promise( (resolve, reject) => {
 
 					const destination = `${tmpFolder}/${shortId()}.mp3`
