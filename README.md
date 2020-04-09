@@ -8,8 +8,28 @@ The FT Labs TTS Dash was not designed to be used as an API, however it can funct
 
 - `npm install`
 - `touch .env`
-- Populate .env with Get .env details from LastPass
-	- Ensure **PORT** is set to `4040`
+
+
+### .env 
+
+- Run `touch .env` to create the required **.env** file
+- Open your new **.env** file and add the following variables:
+
+PORT=3009
+BASE_URL=http://localhost:3009
+OKTA_CLIENT=
+OKTA_ISSUER=
+OKTA_SECRET=
+SESSION_TOKEN=
+
+#### Where to find OKTA .env vars
+
+- Get `SESSION_TOKEN` from LastPass
+- Get details for finding `OKTA_ISSUER`, `OKTA_CLIENT` & `OKTA_SECRET` in LastPass
+
+
+## Launching
+
 - `npm start`
 
 ## Making a request
